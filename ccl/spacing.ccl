@@ -1,0 +1,94 @@
+//
+// Written by Gergely Imreh 2013-02-08
+//
+#include "../../public/ccl/inc/gendefs.h"
+
+cmd space(void);
+
+cmd space(void)
+{
+  /* SAVE_DISPLAY_PREFS;//as defined in gendefs.h */
+  twr;  // text window reset
+  set_preference(output_text, off);
+  /* set_preference(output_text, on); */
+  int i, j, maxnum;
+  double pos[10001];
+  double strehlbf[10001];
+  double strehlrs[10001];
+  double na[10001];
+  double efl[10001];
+  double pmin, pmax, pdiff;
+
+  pmin = 0.1;
+  pmax = 200;
+  maxnum = 1000;
+  pdiff = pmax-pmin;
+  for(i = 0; i <= maxnum; i++)
+  {
+    pos[i] = pmin + pdiff/maxnum*i;
+    th 2 pos[i];
+
+    auf oas; //smallest spotsize
+    sbr;
+    wvf bf;  // wavefront at best image
+    strehlbf[i] = c1;
+
+    auf oaw; //best image
+    sbr;
+    wvf rs;  // wavefront at best image
+    strehlrs[i] = c1;
+
+    sbr;
+    pxc;
+    efl[i] = a1;
+    na[i] = a2;
+  }
+
+  gwr;
+  window(-20,pmax+20,-0.3,1.1);
+  moveto(0, 0);
+  lineto(pmax, 0);
+  lineto(pmax, 1);
+  lineto(0, 1);
+  lineto(0, 0);
+
+  moveto(pmax*0.4, -0.1);
+  label("Lens gap (mm)");
+  moveto(pmax*0.9, -0.1);
+  label("%.2f", pmax);
+  moveto(-17, 1.0);
+  label("Strehl#\n100%");
+
+  // Draw x-ticks
+  for(i = 0; i <= floor(pmax/5); i++)
+  {
+    moveto(5*i, 0);
+    linerel(0, -0.05);
+  }
+  // Draw y-ticks
+  for(i = 0; i <= 10; i++)
+  {
+    moveto(0, i/10);
+    linerel(-5, 0);
+  }
+
+  pen(3);
+  for(i = 1; i <= maxnum; i++)
+  {
+    moveto(pos[i-1], strehlbf[i-1]);
+    lineto(pos[i], strehlbf[i]);
+  }
+  pen(4);
+  for(i = 1; i <= maxnum; i++)
+  {
+    moveto(pos[i-1], strehlrs[i-1]);
+    lineto(pos[i], strehlrs[i]);
+  }
+
+  set_preference(output_text, on);
+  aprintf("#iter,lensgap,Strehlbestfocus,Strehlbestimage,NA,EFL\n");
+  for(i = 0; i <= maxnum; i++)
+  {
+    aprintf("%d,%.2f,%.4f,%.4f,%.4f,%.1f\n", i, pos[i], strehlbf[i], strehlrs[i],na[i],efl[i]);
+  }
+}
