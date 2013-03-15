@@ -3,9 +3,20 @@
 //
 #include "../../public/ccl/inc/gendefs.h"
 
+/* Commands */
 cmd space(void);
+cmd spacepar(int moving_surface, double pmax);
 
+/* Functions */
+// double truefocus(int kind);
+
+// As original behaviour
 cmd space(void)
+{
+  spacepar(2, 200);
+}
+
+cmd spacepar(int moving_surface, double pmax)
 {
   /* SAVE_DISPLAY_PREFS;//as defined in gendefs.h */
   twr;  // text window reset
@@ -17,16 +28,19 @@ cmd space(void)
   double strehlrs[10001];
   double na[10001];
   double efl[10001];
-  double pmin, pmax, pdiff;
+  double pkval[10001];
+  double pmin;
+  /* double pmax; */
+  double pdiff;
 
   pmin = 0.1;
-  pmax = 200;
+  /* pmax = 200; */
   maxnum = 1000;
   pdiff = pmax-pmin;
   for(i = 0; i <= maxnum; i++)
   {
     pos[i] = pmin + pdiff/maxnum*i;
-    th 2 pos[i];
+    th moving_surface pos[i];
 
     auf oas; //smallest spotsize
     sbr;
@@ -37,9 +51,10 @@ cmd space(void)
     sbr;
     wvf rs;  // wavefront at best image
     strehlrs[i] = c1;
+    pkval[i] = a1;
 
     sbr;
-    pxc;
+    pxc; // Paraxial Constants
     efl[i] = a1;
     na[i] = a2;
   }
@@ -86,9 +101,9 @@ cmd space(void)
   }
 
   set_preference(output_text, on);
-  aprintf("#iter,lensgap,Strehlbestfocus,Strehlbestimage,NA,EFL\n");
+  aprintf("#iter,lensgap,Strehlbestfocus,Strehlbestimage,NA,EFL,Peak-to-Valley\n");
   for(i = 0; i <= maxnum; i++)
   {
-    aprintf("%d,%.2f,%.4f,%.4f,%.4f,%.1f\n", i, pos[i], strehlbf[i], strehlrs[i],na[i],efl[i]);
+    aprintf("%d,%.2f,%.4f,%.4f,%.4f,%.1f,%.3f\n", i, pos[i], strehlbf[i], strehlrs[i],na[i],efl[i],pkval[i]);
   }
 }
