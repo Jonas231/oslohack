@@ -49,9 +49,9 @@ cmd spacepar(int moving_surface, double pmax)
 
     auf oaw; //best image
     sbr;
-    wvf rs;  // wavefront at best image
-    strehlrs[i] = c1;
-    pkval[i] = a1;
+    spd(100);  // high division aperture calculation at best image
+    strehlrs[i] = c5;
+    pkval[i] = a5;
 
     sbr;
     pxc; // Paraxial Constants
