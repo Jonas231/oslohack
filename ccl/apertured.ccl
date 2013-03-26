@@ -1,0 +1,31 @@
+//
+// Written by Gergely Imreh 2013-03-26
+//
+#include "../../public/ccl/inc/gendefs.h"
+
+/* Commands */
+cmd spds(void)
+{
+  /* SAVE_DISPLAY_PREFS;//as defined in gendefs.h */
+  twr;  // text window reset
+  set_preference(output_text, off);
+  /* set_preference(output_text, on); */
+  double strehl[1000];
+
+  int minnum = 10;
+  int maxnum = 301;
+
+  for(i = minnum; i <= maxnum; i++)
+  {
+      sbr;
+      spd(i);
+      strehl[i-minnum] = c5;
+  }
+
+  set_preference(output_text, on);
+  aprintf("#iter,Strehl\n");
+  for(i = minnum; i <= maxnum; i++)
+  {
+    aprintf("%d,%.4f\n", i, strehl[i-minnum]);
+  }
+}
