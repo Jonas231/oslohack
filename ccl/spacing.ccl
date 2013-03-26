@@ -44,7 +44,7 @@ cmd spacepar(int moving_surface, double pmax)
 
     auf oas; //smallest spotsize
     sbr;
-    wvf bf;  // wavefront at best image
+    wvf bf;  // wavefront at best focus
     strehlbf[i] = c1;
 
     auf oaw; //best image
